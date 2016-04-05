@@ -22,12 +22,12 @@ always be active regardless of what other tools are currently active.
 """
 from __future__ import absolute_import
 
-from ..model import Model
+from ..core.enums import Dimension, Location
 from ..core.properties import abstract, Float, Color
 from ..core.properties import (
     Any, Bool, String, Enum, Instance, Either, List, Dict, Tuple
 )
-from ..core.enums import Dimension
+from ..model import Model
 
 from .annotations import BoxAnnotation, PolyAnnotation
 from .renderers import Renderer
@@ -52,6 +52,50 @@ class Tool(Model):
     plot = Instance(".models.plots.Plot", help="""
     The Plot that this tool will act on.
     """)
+
+
+class ToolBar(Renderer):
+
+    tools = List(Instance(Tool), help="""
+    A list of tools to add to the plot.
+    """)
+
+    tool_events = Instance(ToolEvents, help="""
+    A ToolEvents object to share and report tool events.
+    """)
+
+    toolbar_location = Enum(Location, help="""
+    Where the toolbar will be located. If set to None, no toolbar
+    will be attached to the plot.
+    """)
+
+    logo = Enum("normal", "grey", help="""
+    What version of the Bokeh logo to display on the toolbar. If
+    set to None, no logo will be displayed.
+    """)
+
+    def __init__(self, **kwargs):
+        if "tool_events" not in kwargs:
+            kwargs["tool_events"] = ToolEvents()
+
+        super(ToolBar, self).__init__(**kwargs)
+
+    def add_tools(self, *tools):
+        ''' Adds an tools to the plot.
+
+        Args:
+            *tools (Tool) : the tools to add to the Plot
+
+        Returns:
+            None
+
+        '''
+        if not all(isinstance(tool, Tool) for tool in tools):
+            raise ValueError("All arguments to add_tool must be Tool subclasses.")
+
+        for tool in tools:
+            self.tools.append(tool)
+
 
 
 class PanTool(Tool):

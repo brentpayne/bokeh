@@ -1,6 +1,7 @@
 _ = require "underscore"
 
 Canvas = require "../canvas/canvas"
+Column = require "../layouts/column"
 CartesianFrame = require "../canvas/cartesian_frame"
 LayoutBox = require "../canvas/layout_box"
 Component = require "../component"
@@ -8,9 +9,6 @@ GlyphRenderer = require "../renderers/glyph_renderer"
 Renderer = require "../renderers/renderer"
 
 build_views = require "../../common/build_views"
-ToolEvents = require "../../common/tool_events"
-ToolManager = require "../../common/tool_manager"
-UIEvents = require "../../common/ui_events"
 
 enums = require "../../core/enums"
 {EQ, GE, Strength, WEAK_EQ, WEAK_GE, Variable} = require "../../core/layout/solver"
@@ -54,12 +52,6 @@ class PlotView extends Renderer.View
     if not @is_paused
       @throttled_render()
     return
-
-  remove: () =>
-    super()
-    # When this view is removed, also remove all of the tools.
-    for id, tool_view of @tools
-      tool_view.remove()
 
   initialize: (options) ->
     super(options)
@@ -107,30 +99,12 @@ class PlotView extends Renderer.View
     @throttled_resize = throttle(@resize, 15)
 
     @renderer_views = {}
-    @tools = {}
 
     @levels = {}
     for level in enums.RenderLevel
       @levels[level] = {}
     @build_levels()
     @bind_bokeh_events()
-
-    @ui_event_bus = new UIEvents({
-      tool_manager: @mget('tool_manager')
-      hit_area: @canvas_view.$el
-    })
-    for id, tool_view of @tools
-      @ui_event_bus.register_tool(tool_view)
-
-    toolbar_location = @mget('toolbar_location')
-    if toolbar_location?
-      toolbar_selector = '.bk-plot-' + toolbar_location
-      logger.debug("attaching toolbar to #{toolbar_selector} for plot #{@model.id}")
-      @tm_view = new ToolManager.View({
-        model: @mget('tool_manager')
-        el: @$(toolbar_selector)
-        location: toolbar_location
-      })
 
     @update_dataranges()
 
@@ -325,19 +299,13 @@ class PlotView extends Renderer.View
     # should only bind events on NEW views and tools
     old_renderers = _.keys(@renderer_views)
     views = build_views(@renderer_views, @mget('renderers'), @view_options())
-    renderers_to_remove = _.difference(old_renderers,
-                                       _.pluck(@mget('renderers'), 'id'))
+    renderers_to_remove = _.difference(old_renderers, _.pluck(@mget('renderers'), 'id'))
     for id_ in renderers_to_remove
       delete @levels.glyph[id_]
-    tools = build_views(@tools, @mget('tools'), @view_options())
     for v in views
       level = v.mget('level')
       @levels[level][v.model.id] = v
       v.bind_bokeh_events()
-    for t in tools
-      level = t.mget('level')
-      @levels[level][t.model.id] = t
-      t.bind_bokeh_events()
     return this
 
   bind_bokeh_events: () ->
@@ -346,7 +314,6 @@ class PlotView extends Renderer.View
     for name, rng of @frame.get('y_ranges')
       @listenTo(rng, 'change', @request_render)
     @listenTo(@model, 'change:renderers', @build_levels)
-    @listenTo(@model, 'change:tool', @build_levels)
     @listenTo(@model, 'change', @request_render)
     @listenTo(@model, 'destroy', () => @remove())
     @listenTo(@document.solver(), 'layout_update', @request_render)
@@ -397,9 +364,6 @@ class PlotView extends Renderer.View
       @interactive = false
 
     @canvas_view.render(force_canvas)
-
-    if @tm_view?
-      @tm_view.render()
 
     for k, v of @renderer_views
       if not @range_update_timestamp? or v.set_data_timestamp > @range_update_timestamp
@@ -582,11 +546,6 @@ class Plot extends Component.Model
       hidpi: @get('hidpi')
     })
     @set('canvas', canvas)
-    @set('tool_manager', new ToolManager.Model({
-      tools: @get('tools')
-      toolbar_location: @get('toolbar_location')
-      logo: @get('logo')
-    }))
 
     min_border = @get('min_border')
     if min_border?
@@ -778,7 +737,7 @@ class Plot extends Component.Model
     @set('renderers', renderers)
 
   nonserializable_attribute_names: () ->
-    super().concat(['canvas', 'tool_manager', 'frame', 'min_size'])
+    super().concat(['canvas', 'frame', 'min_size'])
 
   serializable_attributes: () ->
     attrs = super()
@@ -813,11 +772,6 @@ class Plot extends Component.Model
 
       x_mapper_type:     [ p.String,   'auto'                 ] # TODO (bev)
       y_mapper_type:     [ p.String,   'auto'                 ] # TODO (bev)
-
-      tools:             [ p.Array,    []                     ]
-      tool_events:       [ p.Instance, new ToolEvents.Model() ]
-      toolbar_location:  [ p.Location, 'above'                ]
-      logo:              [ p.String,   'normal'               ] # TODO (bev)
 
       lod_factor:        [ p.Number,   10                     ]
       lod_interval:      [ p.Number,   300                    ]

@@ -23,6 +23,7 @@ class ToolManagerView extends Backbone.View
     if @have_rendered
       return
     @have_rendered = true
+    console.log("render tool manager")
     @$el.html(@template(@model.attributes))
     @$el.addClass("bk-toolbar-#{@location}")
     @$el.addClass("bk-sidebar")

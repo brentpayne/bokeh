@@ -22,7 +22,7 @@ from .glyphs import Glyph
 from .ranges import Range, Range1d, FactorRange
 from .renderers import Renderer, GlyphRenderer, DataRenderer, TileRenderer, DynamicImageRenderer
 from .sources import DataSource, ColumnDataSource
-from .tools import Tool, ToolEvents
+from .tools import Tool, ToolEvents, ToolBar
 from .component import Component
 
 def _select_helper(args, kwargs):
@@ -66,9 +66,6 @@ class Plot(Component):
     """
 
     def __init__(self, **kwargs):
-        if "tool_events" not in kwargs:
-            kwargs["tool_events"] = ToolEvents()
-
         if "border_fill" in kwargs and "border_fill_color" in kwargs:
             raise ValueError("Conflicting properties set on plot: border_fill, border_fill_color.")
 
@@ -179,31 +176,15 @@ class Plot(Component):
                 raise ValueError("object to be added already has 'plot' attribute set")
             obj.plot = self
 
+        if isinstance(obj, ToolBar):
+            for tool in obj.tools:
+                if hasattr(tool, 'overlay'):
+                    self.renderers.append(tool.overlay)
+
         self.renderers.append(obj)
 
         if place is not 'center':
             getattr(self, place).append(obj)
-
-    def add_tools(self, *tools):
-        ''' Adds an tools to the plot.
-
-        Args:
-            *tools (Tool) : the tools to add to the Plot
-
-        Returns:
-            None
-
-        '''
-        if not all(isinstance(tool, Tool) for tool in tools):
-            raise ValueError("All arguments to add_tool must be Tool subclasses.")
-
-        for tool in tools:
-            if tool.plot is not None:
-                raise ValueError("tool %s to be added already has 'plot' attribute set" % tool)
-            tool.plot = self
-            if hasattr(tool, 'overlay'):
-                self.renderers.append(tool.overlay)
-            self.tools.append(tool)
 
     def add_glyph(self, source_or_glyph, glyph=None, **kw):
         ''' Adds a glyph to the plot with associated data sources and ranges.
@@ -391,14 +372,6 @@ class Plot(Component):
     setup is performed.
     """)
 
-    tools = List(Instance(Tool), help="""
-    A list of tools to add to the plot.
-    """)
-
-    tool_events = Instance(ToolEvents, help="""
-    A ToolEvents object to share and report tool events.
-    """)
-
     left  = List(Instance(Renderer), help="""
     A list of renderers to occupy the area to the left of the plot.
     """)
@@ -415,16 +388,6 @@ class Plot(Component):
 
     below = List(Instance(Renderer), help="""
     A list of renderers to occupy the area below of the plot.
-    """)
-
-    toolbar_location = Enum(Location, help="""
-    Where the toolbar will be located. If set to None, no toolbar
-    will be attached to the plot.
-    """)
-
-    logo = Enum("normal", "grey", help="""
-    What version of the Bokeh logo to display on the toolbar. If
-    set to None, no logo will be displayed.
     """)
 
     plot_height = Int(600, help="""
