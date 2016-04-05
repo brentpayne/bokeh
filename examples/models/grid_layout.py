@@ -9,7 +9,7 @@ from bokeh.embed import file_html
 from bokeh.models.glyphs import Line
 from bokeh.models import (
     Plot, DataRange1d, LinearAxis, ColumnDataSource, Row, Column, ResizeTool,
-    FactorRange, CategoricalAxis, Rect,
+    PanTool, FactorRange, CategoricalAxis, Rect,
 )
 from bokeh.resources import INLINE
 
@@ -62,7 +62,7 @@ def make_plot(yname, line_color, below_axis=True, left_axis=True, right_axis=Fal
     if right_axis:
         plot.add_layout(LinearAxis(), 'right')
     plot.add_glyph(source, Line(x="x", y=yname, line_color=line_color))
-    plot.add_tools(ResizeTool())
+    plot.add_tools(PanTool())
     return plot
 
 plot1 = make_plot("y1", "blue", below_axis=False, border_fill_color="Thistle")
