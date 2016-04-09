@@ -8,6 +8,7 @@ class UIEvents extends Backbone.Model
 
   initialize: (attrs, options) ->
     super(attrs, options)
+    # In plot we need to pass in the tool_manager so that these things can access
     @_hammer_element()
 
 

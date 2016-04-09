@@ -9,7 +9,7 @@ Renderer = require "../renderers/renderer"
 
 build_views = require "../../common/build_views"
 ToolEvents = require "../../common/tool_events"
-ToolManager = require "../../common/tool_manager"
+ToolBar = require "../tools/toolbar"
 UIEvents = require "../../common/ui_events"
 
 enums = require "../../core/enums"
@@ -116,21 +116,10 @@ class PlotView extends Renderer.View
     @bind_bokeh_events()
 
     @ui_event_bus = new UIEvents({
-      tool_manager: @mget('tool_manager')
       hit_area: @canvas_view.$el
     })
     for id, tool_view of @tools
       @ui_event_bus.register_tool(tool_view)
-
-    toolbar_location = @mget('toolbar_location')
-    if toolbar_location?
-      toolbar_selector = '.bk-plot-' + toolbar_location
-      logger.debug("attaching toolbar to #{toolbar_selector} for plot #{@model.id}")
-      @tm_view = new ToolManager.View({
-        model: @mget('tool_manager')
-        el: @$(toolbar_selector)
-        location: toolbar_location
-      })
 
     @update_dataranges()
 
@@ -398,9 +387,6 @@ class PlotView extends Renderer.View
 
     @canvas_view.render(force_canvas)
 
-    if @tm_view?
-      @tm_view.render()
-
     for k, v of @renderer_views
       if not @range_update_timestamp? or v.set_data_timestamp > @range_update_timestamp
         @update_dataranges()
@@ -558,7 +544,7 @@ class Plot extends LayoutDom.Model
       hidpi: @get('hidpi')
     })
     @set('canvas', canvas)
-    @set('tool_manager', new ToolManager.Model({
+    @set('toolbar', new ToolBar.Model({
       tools: @get('tools')
       toolbar_location: @get('toolbar_location')
       logo: @get('logo')
@@ -713,7 +699,7 @@ class Plot extends LayoutDom.Model
     @set('renderers', renderers)
 
   nonserializable_attribute_names: () ->
-    super().concat(['canvas', 'tool_manager', 'frame', 'min_size'])
+    super().concat(['canvas', 'frame', 'min_size'])
 
   serializable_attributes: () ->
     attrs = super()

@@ -6,7 +6,7 @@ BokehView = require "../../core/bokeh_view"
 Component = require "./component"
 HasProps = require "../../core/has_props"
 {logger} = require "../../core/logging"
-ToolManager = require "../../common/tool_manager"
+ToolManager = require "./tool_manager"
 plot_template = require "../plots/plot_template"
 
 class ToolProxy extends Backbone.Model

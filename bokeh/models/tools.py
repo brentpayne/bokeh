@@ -32,6 +32,7 @@ from ..core.enums import Dimension
 from .annotations import BoxAnnotation, PolyAnnotation
 from .renderers import Renderer
 from .callbacks import Callback
+from .widgets.widget import Widget
 
 
 class ToolEvents(Model):
@@ -592,3 +593,19 @@ class RedoTool(Tool):
     .. |redo_icon| image:: /_images/icons/Redo.png
         :height: 18pt
     """
+
+
+class ToolBar(Widget):
+    """ Widget that holds tools to display
+    """
+
+    logo = Enum("normal", "grey", help="""
+    What version of the Bokeh logo to display on the toolbar. If
+    set to None, no logo will be displayed.
+    """)
+
+    tools = List(Instance(Tool), help="""
+    A list of tools to add to the plot.
+    """)
+
+

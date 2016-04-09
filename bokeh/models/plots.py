@@ -417,11 +417,13 @@ class Plot(Component):
     A list of renderers to occupy the area below of the plot.
     """)
 
+    # TODO Convenience access to ToolBar
     toolbar_location = Enum(Location, help="""
     Where the toolbar will be located. If set to None, no toolbar
     will be attached to the plot.
     """)
 
+    # TODO Convenience access to ToolBar
     logo = Enum("normal", "grey", help="""
     What version of the Bokeh logo to display on the toolbar. If
     set to None, no logo will be displayed.
