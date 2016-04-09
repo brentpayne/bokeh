@@ -22,7 +22,7 @@ from .glyphs import Glyph
 from .ranges import Range, Range1d, FactorRange
 from .renderers import Renderer, GlyphRenderer, DataRenderer, TileRenderer, DynamicImageRenderer
 from .sources import DataSource, ColumnDataSource
-from .tools import Tool, ToolEvents
+from .tools import Tool, ToolEvents, ToolBar
 from .component import Component
 
 def _select_helper(args, kwargs):
@@ -55,10 +55,12 @@ def _select_helper(args, kwargs):
         selector = kwargs
     return selector
 
+
 class LayoutBox(Model):
     ''' Represents an **on-canvas** layout.
 
     '''
+
 
 class Plot(Component):
     """ Model representing a plot, containing glyphs, guides, annotations.
@@ -74,6 +76,9 @@ class Plot(Component):
 
         if "background_fill" in kwargs and "background_fill_color" in kwargs:
             raise ValueError("Conflicting properties set on plot: background_fill, background_fill_color.")
+
+        if "toolbar" not in kwargs:
+            kwargs["toolbar"] = ToolBar(tools=[])
 
         super(Plot, self).__init__(**kwargs)
 
@@ -204,6 +209,7 @@ class Plot(Component):
             if hasattr(tool, 'overlay'):
                 self.renderers.append(tool.overlay)
             self.tools.append(tool)
+            self.toolbar.tools.append(tool)
 
     def add_glyph(self, source_or_glyph, glyph=None, **kw):
         ''' Adds a glyph to the plot with associated data sources and ranges.
@@ -389,6 +395,12 @@ class Plot(Component):
     This property can be manipulated by hand, but the ``add_glyph`` and
     ``add_layout`` methods are recommended to help make sure all necessary
     setup is performed.
+    """)
+
+    toolbar = Instance(ToolBar, help="""
+        The toolbar associated with this plot which holds all the tools.
+
+        The toolbar is automatically created with the plot.
     """)
 
     tools = List(Instance(Tool), help="""

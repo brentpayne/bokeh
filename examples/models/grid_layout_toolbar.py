@@ -8,7 +8,7 @@ from bokeh.embed import file_html
 from bokeh.models.glyphs import Line
 from bokeh.models import (
     Plot, DataRange1d, LinearAxis, ColumnDataSource, Row, Column,
-    PanTool, Slider, Dropdown, Button, Spacer, ToolBar
+    PanTool, Slider, Dropdown, Button, Spacer
 )
 from bokeh.resources import INLINE
 
@@ -48,7 +48,6 @@ def make_plot(yname, line_color, below_axis=True, left_axis=True, right_axis=Fal
 
 plot1 = make_plot("y1", "blue", below_axis=False, border_fill_color="Thistle")
 plot1.min_border = 8
-plot1_toolbar = ToolBar(tools=plot1.tools)
 
 plot2 = make_plot("y2", "red", right_axis=True)
 plot3 = make_plot("y3", "green", left_axis=False)
@@ -70,7 +69,7 @@ row2 = Row(children=[row2col1, widgetcol])
 
 
 doc = Document()
-doc.add_root(Column(children=[plot1_toolbar, plot1]))
+#doc.add_root(Column(children=[plot1.toolbar, plot1]))
 
 #doc.add_root(Column(
 #    children=[
@@ -98,9 +97,9 @@ doc.add_root(Column(children=[plot1_toolbar, plot1]))
 #row2 = Row(children=[Column(children=[button, plot2])])
 #doc.add_root(Column(children=[row1, row2]))  # works
 
-#row1 = Row(children=[Column(children=[slider, plot1])])
-#row2 = Row(children=[Column(children=[button, plot2, plot4, slider_2])])
-#doc.add_root(Column(children=[row1, row2]))  # works
+row1 = Row(children=[Column(children=[slider, plot1.toolbar, plot1])])
+row2 = Row(children=[Column(children=[button, plot4, slider_2, plot4.toolbar])])
+doc.add_root(Column(children=[row1, row2]))  # works
 
 
 if __name__ == "__main__":

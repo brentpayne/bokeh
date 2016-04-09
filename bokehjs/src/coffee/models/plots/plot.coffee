@@ -9,7 +9,6 @@ Renderer = require "../renderers/renderer"
 
 build_views = require "../../common/build_views"
 ToolEvents = require "../../common/tool_events"
-ToolBar = require "../tools/toolbar"
 UIEvents = require "../../common/ui_events"
 
 enums = require "../../core/enums"
@@ -116,6 +115,7 @@ class PlotView extends Renderer.View
     @bind_bokeh_events()
 
     @ui_event_bus = new UIEvents({
+      toolbar: @mget('toolbar')
       hit_area: @canvas_view.$el
     })
     for id, tool_view of @tools
@@ -544,11 +544,6 @@ class Plot extends LayoutDom.Model
       hidpi: @get('hidpi')
     })
     @set('canvas', canvas)
-    @set('toolbar', new ToolBar.Model({
-      tools: @get('tools')
-      toolbar_location: @get('toolbar_location')
-      logo: @get('logo')
-    }))
 
     min_border = @get('min_border')
     if min_border?

@@ -90,7 +90,7 @@ class UIEvents extends Backbone.Model
       tool_view.listenTo(@, "doubletap", tool_view._doubletap)
 
   _trigger: (event_type, e) ->
-    tm = @get('tool_manager')
+    tm = @get('toolbar')
     base_event_type = event_type.split(":")[0]
     gestures = tm.get('gestures')
     active_tool = gestures[base_event_type].active

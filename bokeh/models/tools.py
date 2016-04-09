@@ -607,5 +607,3 @@ class ToolBar(Widget):
     tools = List(Instance(Tool), help="""
     A list of tools to add to the plot.
     """)
-
-

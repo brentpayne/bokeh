@@ -18,7 +18,6 @@ class ToolBarView extends Widget.View
 
   initialize: (options) ->
     super(options)
-    @location = options.location
     @listenTo(@model, 'change', @render)
     @have_rendered = false
 
