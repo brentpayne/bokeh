@@ -97,8 +97,9 @@ doc = Document()
 #row2 = Row(children=[Column(children=[button, plot2])])
 #doc.add_root(Column(children=[row1, row2]))  # works
 
-row1 = Row(children=[Column(children=[slider, plot1.toolbar, plot1])])
-row2 = Row(children=[Column(children=[button, plot4, slider_2, plot4.toolbar])])
+plot4.toolbar_location = 'below'
+row1 = Row(children=[Column(children=[slider, plot1])])
+row2 = Row(children=[Column(children=[button, plot4])])
 doc.add_root(Column(children=[row1, row2]))  # works
 
 

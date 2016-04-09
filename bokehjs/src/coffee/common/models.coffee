@@ -54,8 +54,9 @@ module.exports = {
 
   LayoutDom:                require '../models/layouts/layout_dom'
   LayoutCanvas:             require '../models/layouts/layout_canvas'
-  Row:                      require '../models/layouts/row'
   Column:                   require '../models/layouts/column'
+  Plot:                     require '../models/layouts/plot'
+  Row:                      require '../models/layouts/row'
   Spacer:                   require '../models/layouts/spacer'
 
   GridPlot:                 require '../models/layouts_legacy/grid_plot'
@@ -82,7 +83,6 @@ module.exports = {
   Triangle:                 require '../models/markers/triangle'
   X:                        require '../models/markers/x'
 
-  Plot:                     require '../models/plots/plot'
   GMapPlot:                 require '../models/plots/gmap_plot'
 
   DataRange1d:              require '../models/ranges/data_range1d'

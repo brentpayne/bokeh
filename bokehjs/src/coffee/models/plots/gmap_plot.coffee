@@ -2,7 +2,7 @@ _ = require "underscore"
 proj4 = require "proj4"
 toProjection = proj4.defs('GOOGLE')
 
-Plot = require "./plot"
+Plot = require "../layouts/plot"
 p = require "../../core/properties"
 
 class GMapPlotView extends Plot.View

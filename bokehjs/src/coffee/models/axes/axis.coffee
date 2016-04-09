@@ -440,7 +440,7 @@ class Axis extends GuideRenderer.Model
 
     @register_property('computed_bounds', @_computed_bounds, false)
     @add_dependencies('computed_bounds', this, ['bounds'])
-    @add_dependencies('computed_bounds', @get('plot'), ['x_range', 'y_range'])
+    @add_dependencies('computed_bounds', @get('plot').plot_canvas, ['x_range', 'y_range'])
 
     @register_property('rule_coords', @_rule_coords, false)
     @add_dependencies('rule_coords', this, ['computed_bounds', 'side'])
@@ -485,7 +485,7 @@ class Axis extends GuideRenderer.Model
   _offsets: () ->
     side = @get('layout_location')
     [xoff, yoff] = [0, 0]
-    frame = @get('plot').get('frame')
+    frame = @get('plot').plot_canvas.get('frame')
 
     if side == "below"
       yoff = Math.abs(@panel.get("top") - frame.get("bottom"))
@@ -504,7 +504,7 @@ class Axis extends GuideRenderer.Model
   _ranges: () ->
     i = @get('dimension')
     j = (i + 1) % 2
-    frame = @get('plot').get('frame')
+    frame = @get('plot').plot_canvas.get('frame')
     ranges = [
       frame.get('x_ranges')[@get('x_range_name')],
       frame.get('y_ranges')[@get('y_range_name')]
