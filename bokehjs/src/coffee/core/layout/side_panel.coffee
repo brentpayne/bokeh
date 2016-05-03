@@ -2,6 +2,7 @@
 LayoutCanvas = require "./layout_canvas"
 
 class SidePanel extends LayoutCanvas.Model
+  type: 'SidePanel'
 
   get_constraints: () ->
     constraints = []
