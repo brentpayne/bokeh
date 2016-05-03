@@ -1,6 +1,7 @@
 module.exports = {
   ## api/typings/models/annotations.d.ts
   Annotation:                             require("../models/annotations/annotation").Model
+  AnnotationPanel:                             require("../models/annotations/annotation_panel").Model
   Legend:                                 require("../models/annotations/legend").Model
   BoxAnnotation:                          require("../models/annotations/box_annotation").Model
   PolyAnnotation:                         require("../models/annotations/poly_annotation").Model

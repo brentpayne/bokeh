@@ -4,6 +4,7 @@ module.exports = {
   Selector:                 require './selector'
   ToolEvents:               require './tool_events'
 
+  AnnotationPanel:            require '../models/annotations/annotation_panel'
   BoxAnnotation:            require '../models/annotations/box_annotation'
   Label:                    require '../models/annotations/label'
   Legend:                   require '../models/annotations/legend'

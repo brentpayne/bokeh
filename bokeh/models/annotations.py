@@ -14,10 +14,10 @@ from ..core.properties import (
     Include, NumberSpec, Either, Auto, Float, Override, Seq, StringSpec,
     AngleSpec
 )
-from ..util.deprecate import deprecated
 
 from .renderers import Renderer, GlyphRenderer
 from .sources import DataSource, ColumnDataSource
+
 
 @abstract
 class Annotation(Renderer):
@@ -390,3 +390,43 @@ class Tooltip(Annotation):
     inner_only = Bool(default=True, help="""
     Whether to display outside a central plot frame area.
     """)
+
+
+class AnnotationPanel(Renderer):
+    """
+    Adds a space onto the side of your plot that can be used to add a title or other annotations.
+    """
+
+    background_props = Include(FillProps, help="""
+    The %s for the panel background style.
+    """)
+
+    background_fill_color = Override(default='#ffffff')
+
+    border_props = Include(FillProps, help="""
+    The %s for the panel border style.
+    """)
+
+    border_fill_color = Override(default='#ffffff')
+
+    annotations = List(Instance(Annotation), help="""
+    A list of all annotations for this plot.
+
+    This property can be manipulated by hand, but the ``add_annotation`` methods are
+    recommended to help make sure all necessary setup is performed.
+    """)
+
+    def add_annotation(self, annotation, **kwargs):
+        '''Adds new Annotation into the AnnotationPanel.annotations
+
+        Args:
+            annotation (Annotation) : instance of annotation to add to plot
+        Returns:
+            Annotation
+
+        '''
+        if not isinstance(annotation, Annotation):
+            raise ValueError("'annotation' argument to add_annotation must be Annotation subclass")
+
+        self.annotations.append(annotation)
+        return annotation

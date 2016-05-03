@@ -5,7 +5,8 @@ from bokeh.document import Document
 from bokeh.embed import file_html
 from bokeh.models.glyphs import Circle
 from bokeh.models import (
-    Plot, DataRange1d, LinearAxis, Grid, ColumnDataSource, PanTool, WheelZoomTool
+    Plot, DataRange1d, LinearAxis, Grid, ColumnDataSource, PanTool, WheelZoomTool,
+    Label, AnnotationPanel
 )
 from bokeh.resources import INLINE
 from bokeh.sampledata.iris import flowers
@@ -27,7 +28,12 @@ source = ColumnDataSource(
 xdr = DataRange1d()
 ydr = DataRange1d()
 
-plot = Plot(x_range=xdr, y_range=ydr, min_border=80, title="Iris Data")
+plot = Plot(x_range=xdr, y_range=ydr, min_border=80)
+
+# Manually add a title
+title_panel = AnnotationPanel(background_fill_color='purple', background_fill_alpha=0.88)
+title_panel.add_annotation(Label(x=0, y=0, text=["Iris plot"]))
+plot.add_layout(title_panel, 'above')
 
 circle = Circle(
     x="petal_length", y="petal_width", size=10,
@@ -35,10 +41,10 @@ circle = Circle(
 )
 plot.add_glyph(source, circle)
 
-xaxis = LinearAxis(axis_label="petal length", bounds=(1,7), major_tick_in=0)
+xaxis = LinearAxis(axis_label="petal length", bounds=(1, 7), major_tick_in=0)
 plot.add_layout(xaxis, 'below')
 
-yaxis = LinearAxis(axis_label="petal width", bounds=(0,2.5), major_tick_in=0)
+yaxis = LinearAxis(axis_label="petal width", bounds=(0, 2.5), major_tick_in=0)
 plot.add_layout(yaxis, 'left')
 
 plot.add_layout(Grid(dimension=0, ticker=xaxis.ticker))

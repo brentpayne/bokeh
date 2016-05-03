@@ -432,22 +432,18 @@ class Axis extends GuideRenderer.Model
       @_dim = 0
       @_normals = [0, -1]
       @_size = @panel._height
-      @_anchor = @panel._bottom
     else if side == "below"
       @_dim = 0
       @_normals = [0, 1]
       @_size = @panel._height
-      @_anchor = @panel._top
     else if side == "left"
       @_dim = 1
       @_normals = [-1, 0]
       @_size = @panel._width
-      @_anchor = @panel._right
     else if side == "right"
       @_dim = 1
       @_normals = [1, 0]
       @_size = @panel._width
-      @_anchor = @panel._left
     else
       logger.error("unrecognized side: '#{ side }'")
 
@@ -457,16 +453,16 @@ class Axis extends GuideRenderer.Model
     frame = @get('plot').get('frame')
 
     if side == "below"
-      yoff = Math.abs(@panel.get("top") - frame.get("bottom"))
+      yoff = Math.abs(@panel._top_value - frame._bottom._value)
 
     else if side == "above"
-      yoff = Math.abs(@panel.get("bottom") - frame.get("top"))
+      yoff = Math.abs(@panel._bottom._value - frame._top._value)
 
     else if side == "right"
-      xoff = Math.abs(@panel.get("left") - frame.get("right"))
+      xoff = Math.abs(@panel._left._value - frame._right._value)
 
     else if side == "left"
-      xoff = Math.abs(@panel.get("right") - frame.get("left"))
+      xoff = Math.abs(@panel._right._value - frame._left._value)
 
     return [xoff, yoff]
 

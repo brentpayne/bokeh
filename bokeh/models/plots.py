@@ -375,25 +375,6 @@ class Plot(LayoutDOM):
     Whether to use HiDPI mode when available.
     """)
 
-    title_standoff = Int(default=8, help="""
-    How far (in screen units) to place a title away from the central
-    plot region.
-    """)
-
-    title = String('', help="""
-    A title for the plot.
-    """)
-
-    title_props = Include(TextProps, help="""
-    The %s for the plot title.
-    """)
-
-    title_text_align = Override(default='center')
-
-    title_text_baseline = Override(default='alphabetic')
-
-    title_text_font_size = Override(default={ 'value' : '20pt' })
-
     outline_props = Include(LineProps, help="""
     The %s for the plot border outline.
     """)
