@@ -5,7 +5,7 @@ from bokeh.document import Document
 from bokeh.embed import file_html
 from bokeh.models.glyphs import Circle
 from bokeh.models import (
-    Plot, DataRange1d, LinearAxis, Grid, ColumnDataSource, PanTool, WheelZoomTool
+    Plot, DataRange1d, LinearAxis, Grid, ColumnDataSource, PanTool, WheelZoomTool, Label
 )
 from bokeh.resources import INLINE
 from bokeh.sampledata.iris import flowers
@@ -27,7 +27,15 @@ source = ColumnDataSource(
 xdr = DataRange1d()
 ydr = DataRange1d()
 
-plot = Plot(x_range=xdr, y_range=ydr, min_border=80, title="Iris Data")
+plot = Plot(x_range=xdr, y_range=ydr, min_border=80)
+
+# Manually add title
+title = Label(x=100, y=0, text=["Iris plot"], x_units='screen')
+plot.add_layout(title)
+
+title_2 = Label(x=0, y=0, text=["Iris plot"], x_units='screen')
+plot.add_layout(title_2, 'above')
+
 
 circle = Circle(
     x="petal_length", y="petal_width", size=10,
